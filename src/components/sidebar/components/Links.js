@@ -68,7 +68,7 @@ export function SidebarLinks(props) {
                           ? activeIcon
                           : textColor
                       }
-                      me='18px'>
+                      me='18px' mb="-5px">
                       {route.icon}
                     </Box>
                     <Text

@@ -7,6 +7,12 @@ import {
   MdHome,
   MdLock,
   MdOutlineShoppingCart,
+  MdGroups,
+  MdLocationOn,
+  MdLocalHospital,
+  MdListAlt,
+  MdAssignmentInd,
+  MdAssignment,
 } from 'react-icons/md';
 
 // Admin Imports
@@ -68,6 +74,48 @@ const routes = [
     layout: '/rtl',
     path: '/rtl-default',
     icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
+    component: <RTL />,
+  },
+  {
+    name: 'Team',
+    layout: '/admin',
+    path: '/team',
+    icon: <Icon as={MdGroups} width="20px" height="20px" color="inherit" />,
+    component: <RTL />,
+  },
+  {
+    name: 'Locations',
+    layout: '/admin',
+    path: '/locations',
+    icon: <Icon as={MdLocationOn} width="20px" height="20px" color="inherit" />,
+    component: <RTL />,
+  },
+  {
+    name: 'Providers',
+    layout: '/admin',
+    path: '/providers',
+    icon: <Icon as={MdLocalHospital} width="20px" height="20px" color="inherit" />,
+    component: <RTL />,
+  },
+  {
+    name: 'Procedures',
+    layout: '/admin',
+    path: '/procedures',
+    icon: <Icon as={MdListAlt} width="20px" height="20px" color="inherit" />,
+    component: <RTL />,
+  },
+  {
+    name: 'Roles',
+    layout: '/admin',
+    path: '/roles',
+    icon: <Icon as={MdAssignmentInd} width="20px" height="20px" color="inherit" />,
+    component: <RTL />,
+  },
+  {
+    name: 'Status',
+    layout: '/admin',
+    path: '/status',
+    icon: <Icon as={MdAssignment} width="20px" height="20px" color="inherit" />,
     component: <RTL />,
   },
 ];
