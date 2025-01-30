@@ -1,6 +1,6 @@
 import './assets/css/App.css';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { } from 'react-router-dom';
+import {} from 'react-router-dom';
 import AuthLayout from './layouts/auth';
 import AdminLayout from './layouts/admin';
 import {
@@ -25,7 +25,11 @@ export default function Main() {
             <AdminLayout theme={currentTheme} setTheme={setCurrentTheme} />
           }
         />
-        <Route path="/" element={<Navigate to="/admin" replace />} />
+        <Route path="/" element={<Navigate to="/auth/sign-in" replace />} />
+        <Route
+          path="/admin"
+          element={<Navigate to="/auth/sign-in" replace />}
+        />
       </Routes>
     </ChakraProvider>
   );

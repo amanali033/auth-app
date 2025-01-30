@@ -10,3 +10,83 @@ option {
 .backBtn span.chakra-button__icon {
   margin: 0px !important;
 }
+
+button.chakra-modal__close-btn {
+  color: #3965ff;
+}
+
+/* button.chakra-modal__close-btn {
+  color: #e31a1a;
+  background-color: #feefee;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+button.chakra-modal__close-btn:hover {
+  background-color: #ebdad9;
+} */
+
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  border: 1px solid #e4e4e7;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.pagination li {
+  font-weight: bold;
+  cursor: pointer;
+  padding: 8px 12px;
+  background: #fff;
+  width: 36px;
+  height: 36px;
+  text-align: center;
+  border-right: 1px solid #e4e4e7;
+  color: #a0aec0;
+  transition: background 0.3s;
+}
+
+.pagination li,
+.pagination li.break {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination li.break a {
+  height: 30px;
+}
+
+.pagination li.next {
+  border-right: 0px !important;
+}
+
+.pagination li:hover {
+  background: #6c8cff;
+  color: #fff;
+}
+
+.pagination .active {
+  background: #3965ff;
+  color: #fff;
+}
+
+.pagination .active:hover {
+  background: #6c8cff;
+  color: #fff;
+}
+
+.pagination .disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@media (max-width: 400px) {
+  .pagination li {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+  }
+}

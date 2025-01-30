@@ -27,6 +27,7 @@ import ForgetPassword from 'views/auth/forgetPassword';
 import ResetPassword from 'views/auth/resetPassword';
 import Team from 'views/team';
 import TeamDetails from 'views/team/teamDetails';
+import Location from 'views/location';
 
 const routes = [
   // {
@@ -77,7 +78,7 @@ const routes = [
     layout: '/admin',
     path: '/locations',
     icon: <Icon as={MdLocationOn} width="20px" height="20px" color="inherit" />,
-    component: <DataTables />,
+    component: <Location />,
   },
   {
     name: 'Providers',
