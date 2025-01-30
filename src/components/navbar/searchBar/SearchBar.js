@@ -37,7 +37,7 @@ export function SearchBar(props) {
         }
       />
       <Input
-        variant='search'
+        variant='flushed'
         fontSize='sm'
         bg={background ? background : inputBg}
         color={inputText}

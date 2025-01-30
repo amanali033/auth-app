@@ -27,7 +27,7 @@ import { IoMdMoon, IoMdSunny } from 'react-icons/io';
 import { FaEthereum } from 'react-icons/fa';
 import routes from 'routes';
 export default function HeaderLinks(props) {
-  const { secondary } = props;
+  const { secondary, brandText, mainText } = props;
   const { colorMode, toggleColorMode } = useColorMode();
   // Chakra Color Mode
   const navbarIcon = useColorModeValue('gray.400', 'white');
@@ -54,7 +54,7 @@ export default function HeaderLinks(props) {
       borderRadius="30px"
       boxShadow={shadow}
     >
-      <SearchBar
+      {/* <SearchBar
         mb={() => {
           if (secondary) {
             return { base: '10px', md: 'unset' };
@@ -63,7 +63,27 @@ export default function HeaderLinks(props) {
         }}
         me="10px"
         borderRadius="30px"
-      />
+      /> */}
+      <Link
+        color={mainText}
+        href='#'
+        bg='inherit'
+        borderRadius='inherit'
+        fontWeight='bold'
+        fontSize='28px'
+        display={{ base: 'flex', md: 'none', }}
+        mr="auto"
+        _hover={{ color: { mainText } }}
+        _active={{
+          bg: 'inherit',
+          transform: 'none',
+          borderColor: 'transparent'
+        }}
+        _focus={{
+          boxShadow: 'none'
+        }}>
+        {brandText}
+      </Link>
       <Flex
         bg={ethBg}
         display={secondary ? 'flex' : 'none'}
@@ -99,7 +119,7 @@ export default function HeaderLinks(props) {
         </Text>
       </Flex>
       <SidebarResponsive routes={routes} />
-      <Menu>
+      {/* <Menu>
         <MenuButton p="0px">
           <Icon
             mt="6px"
@@ -156,9 +176,9 @@ export default function HeaderLinks(props) {
             </MenuItem>
           </Flex>
         </MenuList>
-      </Menu>
+      </Menu> */}
 
-      <Menu>
+      {/* <Menu>
         <MenuButton p="0px">
           <Icon
             mt="6px"
@@ -204,8 +224,8 @@ export default function HeaderLinks(props) {
             </Link>
           </Flex>
         </MenuList>
-      </Menu>
-
+      </Menu> */}
+      {/* 
       <Button
         variant="no-hover"
         bg="transparent"
@@ -223,7 +243,7 @@ export default function HeaderLinks(props) {
           color={navbarIcon}
           as={colorMode === 'light' ? IoMdMoon : IoMdSunny}
         />
-      </Button>
+      </Button> */}
       <Menu>
         <MenuButton p="0px">
           <Avatar

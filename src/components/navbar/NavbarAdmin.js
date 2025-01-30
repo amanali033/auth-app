@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import AdminNavbarLinks from 'components/navbar/NavbarLinksAdmin';
 
 export default function AdminNavbar(props) {
-	const [ scrolled, setScrolled ] = useState(false);
+	const [scrolled, setScrolled] = useState(false);
 
 	useEffect(() => {
 		window.addEventListener('scroll', changeNavbar);
@@ -85,10 +85,11 @@ export default function AdminNavbar(props) {
 					sm: 'column',
 					md: 'row'
 				}}
-				alignItems={{ xl: 'center' }}
+				alignItems='center'
+				justifyContent="center"
 				mb={gap}>
 				<Box mb={{ sm: '8px', md: '0px' }}>
-					<Breadcrumb>
+					{/* <Breadcrumb>
 						<BreadcrumbItem color={secondaryText} fontSize='sm' mb='5px'>
 							<BreadcrumbLink href='#' color={secondaryText}>
 								Pages
@@ -100,7 +101,7 @@ export default function AdminNavbar(props) {
 								{brandText}
 							</BreadcrumbLink>
 						</BreadcrumbItem>
-					</Breadcrumb>
+					</Breadcrumb> */}
 					{/* Here we create navbar brand, based on route name */}
 					<Link
 						color={mainText}
@@ -108,7 +109,8 @@ export default function AdminNavbar(props) {
 						bg='inherit'
 						borderRadius='inherit'
 						fontWeight='bold'
-						fontSize='34px'
+						display={{ base: 'none', md: 'block' }}
+						fontSize='32px'
 						_hover={{ color: { mainText } }}
 						_active={{
 							bg: 'inherit',
@@ -121,13 +123,15 @@ export default function AdminNavbar(props) {
 						{brandText}
 					</Link>
 				</Box>
-				<Box ms='auto' w={{ sm: '100%', md: 'unset' }}>
+				<Box ms='auto' w={{ base: '100%', md: 'unset' }}>
 					<AdminNavbarLinks
 						onOpen={props.onOpen}
 						logoText={props.logoText}
 						secondary={props.secondary}
 						fixed={props.fixed}
 						scrolled={scrolled}
+						mainText={mainText}
+						brandText={brandText}
 					/>
 				</Box>
 			</Flex>

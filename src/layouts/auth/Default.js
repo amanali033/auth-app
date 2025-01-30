@@ -13,23 +13,26 @@ function AuthIllustration(props) {
   const { children, illustrationBackground } = props;
   // Chakra color mode
   return (
-    <Flex position='relative' h='max-content'>
+    <Flex
+      position='relative'
+      h='max-content'
+      backgroundImage={`url(${illustrationBackground})`}
+      backgroundSize="cover"
+      backgroundPosition="center"
+      backgroundRepeat="no-repeat"
+    >
       <Flex
-        h={{
-          sm: "initial",
-          md: "unset",
-          lg: "100vh",
-          xl: "97vh",
-        }}
+        h="100vh"
         w='100%'
         maxW={{ md: "66%", lg: "1313px" }}
         mx='auto'
         pt={{ sm: "50px", md: "0px" }}
         px={{ lg: "30px", xl: "0px" }}
         ps={{ xl: "70px" }}
-        justifyContent='start'
-        direction='column'>
-        <NavLink
+        justifyContent='center'
+        alignItems="center"
+      >
+        {/* <NavLink
           to='/admin'
           style={() => ({
             width: "fit-content",
@@ -51,9 +54,10 @@ function AuthIllustration(props) {
               Back to Simmmple
             </Text>
           </Flex>
-        </NavLink>
+        </NavLink> */}
+
         {children}
-        <Box
+        {/* <Box
           display={{ base: "none", md: "block" }}
           h='100%'
           minH='100vh'
@@ -70,11 +74,11 @@ function AuthIllustration(props) {
             bgPosition='50%'
             position='absolute'
             borderBottomLeftRadius={{ lg: "120px", xl: "200px" }}></Flex>
-        </Box>
-        <Footer />
+        </Box> */}
+        {/* <Footer /> */}
       </Flex>
-      <FixedPlugin />
-    </Flex>
+      {/* <FixedPlugin /> */}
+    </Flex >
   );
 }
 // PROPS
