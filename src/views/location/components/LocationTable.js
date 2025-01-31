@@ -55,6 +55,19 @@ export default function LocationTable(props) {
 
   // Columns definition
   const columns = [
+    columnHelper.accessor((row, index) => index + 1, {
+      id: '#',
+      header: () => (
+        <Text fontSize="12px" color="gray.400" fontWeight="bold">
+          #
+        </Text>
+      ),
+      cell: (info) => (
+        <Text color={textColor} fontSize="sm" fontWeight="700">
+          {info.getValue()}
+        </Text>
+      ),
+    }),
     columnHelper.accessor('name', {
       id: 'name',
       header: () => (
@@ -95,7 +108,7 @@ export default function LocationTable(props) {
       ),
     }),
     columnHelper.accessor('postalCode', {
-      id: 'Postal Code',
+      id: 'postalCode',
       header: () => (
         <Text fontSize="12px" color="gray.400" fontWeight="bold">
           Postal Code
@@ -271,7 +284,7 @@ export default function LocationTable(props) {
         </Flex>
 
         <Box overflowX="auto">
-          <Table variant="simple" color="gray.500" mb="24px" mt="12px">
+          <Table variant="striped" color="gray.500" mb="24px" mt="12px">
             <Thead>
               {table.getHeaderGroups().map((headerGroup) => (
                 <Tr key={headerGroup.id}>

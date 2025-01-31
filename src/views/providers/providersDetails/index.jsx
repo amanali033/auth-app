@@ -29,7 +29,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import TeamMemberModal from 'views/team/components/TeamMemberModal';
+import ProvidersTable from '../components/ProvidersTable';
 
 const locationData = [
   {
@@ -42,7 +42,7 @@ const locationData = [
 
 const columnHelper = createColumnHelper();
 
-export default function LocationDetails(props) {
+export default function ProvidersDetails(props) {
   const { ...rest } = props;
   // Columns definition
   const columns = [
@@ -293,7 +293,7 @@ export default function LocationDetails(props) {
           </Box>
         </Card>
       </Grid>
-      <TeamMemberModal isOpen={isOpen} onClose={onClose} type={type} />
+      <ProvidersTable isOpen={isOpen} onClose={onClose} type={type} />
     </Box>
   );
 }

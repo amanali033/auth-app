@@ -23,7 +23,7 @@ import * as Yup from 'yup';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 import { RiEyeCloseLine } from 'react-icons/ri';
 
-const AddTeamMemberModal = ({ isOpen, onClose }) => {
+const TeamMemberModal = ({ isOpen, onClose, type }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handlePasswordVisibility = () => setShowPassword(!showPassword);
@@ -59,7 +59,7 @@ const AddTeamMemberModal = ({ isOpen, onClose }) => {
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent borderRadius="16px" pb="16px">
-          <ModalHeader color="brand.500">Add Team Member</ModalHeader>
+          <ModalHeader color="brand.500">{type === "edit" ? <>Edit Team Member </> : <>Add Team Member</>}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <form onSubmit={formik.handleSubmit}>
@@ -190,8 +190,7 @@ const AddTeamMemberModal = ({ isOpen, onClose }) => {
               </FormControl>
 
               <Button type="submit" colorScheme="brand" w="100%" mt={4}>
-                Add Team Member
-              </Button>
+                {type === "edit" ? <>Update Team Member </> : <>Add Team Member</>}              </Button>
             </form>
           </ModalBody>
         </ModalContent>
@@ -200,4 +199,4 @@ const AddTeamMemberModal = ({ isOpen, onClose }) => {
   );
 };
 
-export default AddTeamMemberModal;
+export default TeamMemberModal;

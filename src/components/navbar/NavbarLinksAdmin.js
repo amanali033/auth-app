@@ -26,6 +26,7 @@ import { MdNotificationsNone, MdInfoOutline } from 'react-icons/md';
 import { IoMdMoon, IoMdSunny } from 'react-icons/io';
 import { FaEthereum } from 'react-icons/fa';
 import routes from 'routes';
+import { useNavigate } from 'react-router-dom';
 export default function HeaderLinks(props) {
   const { secondary, brandText, mainText } = props;
   const { colorMode, toggleColorMode } = useColorMode();
@@ -43,6 +44,11 @@ export default function HeaderLinks(props) {
     '14px 17px 40px 4px rgba(112, 144, 176, 0.06)',
   );
   const borderButton = useColorModeValue('secondaryGray.500', 'whiteAlpha.200');
+
+  const navigate = useNavigate()
+  const handleLogout = () => {
+    navigate("/auth/sign-in")
+  }
   return (
     <Flex
       w={{ sm: '100%', md: 'auto' }}
@@ -276,32 +282,36 @@ export default function HeaderLinks(props) {
               fontWeight="700"
               color={textColor}
             >
-              👋&nbsp; Hey, Adela
+              👋&nbsp; Hey
             </Text>
           </Flex>
           <Flex flexDirection="column" p="10px">
             <MenuItem
-              _hover={{ bg: 'none' }}
-              _focus={{ bg: 'none' }}
+              _hover={{ bg: 'none', color: "brand.500" }}
+              _focus={{ bg: 'none', color: "brand.500" }}
               borderRadius="8px"
               px="14px"
+              onClick={() => navigate("/profile-settings")}
             >
               <Text fontSize="sm">Profile Settings</Text>
             </MenuItem>
             <MenuItem
-              _hover={{ bg: 'none' }}
-              _focus={{ bg: 'none' }}
+              _hover={{ bg: 'none', color: "brand.500" }}
+              _focus={{ bg: 'none', color: "brand.500" }}
               borderRadius="8px"
               px="14px"
+              onClick={() => navigate("/account-settings")}
             >
-              <Text fontSize="sm">Newsletter Settings</Text>
+              <Text fontSize="sm">Account Settings</Text>
             </MenuItem>
+
             <MenuItem
-              _hover={{ bg: 'none' }}
-              _focus={{ bg: 'none' }}
+              _hover={{ bg: 'none', color: "red.700" }}
+              _focus={{ bg: 'none', color: "red.700" }}
               color="red.400"
               borderRadius="8px"
               px="14px"
+              onClick={handleLogout}
             >
               <Text fontSize="sm">Log out</Text>
             </MenuItem>

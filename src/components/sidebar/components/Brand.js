@@ -8,7 +8,7 @@ import { HSeparator } from 'components/separator/Separator';
 
 export function SidebarBrand() {
   //   Chakra color mode
-  let logoColor = useColorModeValue('navy.700', 'white');
+  let logoColor = useColorModeValue('brand.500', 'white');
 
   return (
     <Flex align="center" direction="column">
@@ -19,7 +19,7 @@ export function SidebarBrand() {
         lineHeight="100%"
         mb="20px"
       >
-        Auth <span style={{ fontWeight: '500' }}>App</span>
+        Auth <span style={{ fontWeight: '400', color: "#1B254B" }}>App</span>
       </Text>
       <HSeparator mb="20px" />
     </Flex>

@@ -15,6 +15,7 @@ import {
   Select,
   Button,
   useDisclosure,
+  Switch,
 } from '@chakra-ui/react';
 import * as React from 'react';
 import {
@@ -30,6 +31,7 @@ import Card from 'components/card/Card';
 import Menu from 'components/menu/MainMenu';
 import {
   MdCheckCircle,
+  MdEdit,
   MdOutlineError,
   MdPending,
   MdVisibility,
@@ -37,18 +39,21 @@ import {
 import { SearchBar } from 'components/navbar/searchBar/SearchBar';
 import Pagination from 'components/pagination';
 import { useNavigate } from 'react-router-dom';
-import TeamMemberModal from './TeamMemberModal';
+import { ProvidersModal } from './ProvidersModal';
+
 
 // Column Helper
 const columnHelper = createColumnHelper();
 
 // TeamTable Component
-export default function TeamTable(props) {
-  const { tableData } = props;
+export default function ProvidersTable(props) {
+  const { providersData } = props;
   const navigate = useNavigate();
+  const [type, setType] = React.useState('add');
+  const [selectedLocation, setSelectedLocation] = React.useState(null);
+  const [statusFilter, setStatusFilter] = React.useState("");
   const [sorting, setSorting] = React.useState([]);
   const textColor = useColorModeValue('secondaryGray.900', 'white');
-  // const primaryTextColor = useColorModeValue('brand.600', 'white');
   const borderColor = useColorModeValue('gray.200', 'whiteAlpha.100');
 
   // Columns definition
@@ -83,7 +88,7 @@ export default function TeamTable(props) {
       id: 'email',
       header: () => (
         <Text fontSize="12px" color="gray.400" fontWeight="bold">
-          EMAIL
+          Email
         </Text>
       ),
       cell: (info) => (
@@ -92,81 +97,78 @@ export default function TeamTable(props) {
         </Text>
       ),
     }),
-    columnHelper.accessor('requestStatus', {
-      id: 'requestStatus',
+    columnHelper.accessor('phone', {
+      id: 'phone',
       header: () => (
         <Text fontSize="12px" color="gray.400" fontWeight="bold">
-          REQUEST STATUS
+          Phone
         </Text>
       ),
       cell: (info) => (
-        <Flex align="center">
-          <Icon
-            w="24px"
-            h="24px"
-            me="5px"
-            color={
-              info.getValue() === 'Accepted'
-                ? 'green.500'
-                : info.getValue() === 'Pending'
-                  ? 'yellow.500'
-                  : info.getValue() === 'NA'
-                    ? 'orange.500'
-                    : null
-            }
-            as={
-              info.getValue() === 'Accepted'
-                ? MdCheckCircle
-                : info.getValue() === 'Pending'
-                  ? MdPending
-                  : info.getValue() === 'NA'
-                    ? MdOutlineError
-                    : null
-            }
-          />
-          <Text color={textColor} fontSize="sm" fontWeight="700">
-            {info.getValue()}
-          </Text>
-        </Flex>
-      ),
-    }),
-    columnHelper.accessor('role', {
-      id: 'role',
-      header: () => (
-        <Text fontSize="12px" color="gray.400" fontWeight="bold">
-          ROLE
+        <Text color={textColor} fontSize="sm" fontWeight="700">
+          {info.getValue()}
         </Text>
       ),
-      cell: (info) => {
-        const role = info.getValue();
-        const roleColors = {
-          Admin: 'red',
-          Lab: 'blue',
-          Staff: 'green',
-          // default: "gray.500",
-        };
-
-        return (
-          <Badge
-            colorScheme={roleColors[role] || 'gray'}
-            px={2}
-            py={1.5}
-            borderRadius="md"
-            textAlign="center"
-            minWidth="60px"
-          >
-            <Text fontSize="sm" textTransform="capitalize" fontWeight="700">
-              {role}
-            </Text>
-          </Badge>
-        );
-      },
     }),
-    columnHelper.accessor('userStatus', {
-      id: 'userStatus',
+
+    columnHelper.accessor('designation', {
+      id: 'designation',
       header: () => (
         <Text fontSize="12px" color="gray.400" fontWeight="bold">
-          USER STATUS
+          Designation
+        </Text>
+      ),
+      cell: (info) => (
+        <Text color={textColor} fontSize="sm" fontWeight="700">
+          {info.getValue()}
+        </Text>
+      ),
+    }),
+
+    columnHelper.accessor('NPI', {
+      id: 'NPI',
+      header: () => (
+        <Text fontSize="12px" color="gray.400" fontWeight="bold">
+          NPI #
+        </Text>
+      ),
+      cell: (info) => (
+        <Text color={textColor} fontSize="sm" fontWeight="700">
+          {info.getValue()}
+        </Text>
+      ),
+    }),
+    columnHelper.accessor('TIN', {
+      id: 'TIN',
+      header: () => (
+        <Text fontSize="12px" color="gray.400" fontWeight="bold">
+          TIN #
+        </Text>
+      ),
+      cell: (info) => (
+        <Text color={textColor} fontSize="sm" fontWeight="700">
+          {info.getValue()}
+        </Text>
+      ),
+    }),
+    columnHelper.accessor('stateID', {
+      id: 'stateID',
+      header: () => (
+        <Text fontSize="12px" color="gray.400" fontWeight="bold">
+          state ID
+        </Text>
+      ),
+      cell: (info) => (
+        <Text color={textColor} fontSize="sm" fontWeight="700">
+          {info.getValue()}
+        </Text>
+      ),
+    }),
+    columnHelper.accessor('status', {
+      id: 'status',
+      header: () => (
+        <Text fontSize="12px" color="gray.400" fontWeight="bold">
+          Status
         </Text>
       ),
       cell: (info) => {
@@ -192,6 +194,36 @@ export default function TeamTable(props) {
         );
       },
     }),
+    columnHelper.accessor('updateStatus', {
+      id: 'updateStatus',
+      header: () => (
+        <Text fontSize="12px" color="gray.400" fontWeight="bold">
+          Update Status
+        </Text>
+      ),
+      cell: (info) => {
+        const handleStatusChange = (rowIndex) => {
+          setData((prevData) =>
+            prevData.map((row, index) =>
+              index === rowIndex
+                ? { ...row, status: row.status === 'Enable' ? 'Disabled' : 'Enable' }
+                : row
+            )
+          );
+        };
+
+        const rowIndex = info.row.index; // Get the row index
+        const isChecked = data[rowIndex]?.status === 'Enable'; // Check status
+
+        return (
+          <Switch
+            isChecked={isChecked}
+            onChange={() => handleStatusChange(rowIndex)}
+            colorScheme="brand"
+          />
+        );
+      },
+    }),
     columnHelper.accessor('action', {
       id: 'action',
       header: () => (
@@ -200,25 +232,28 @@ export default function TeamTable(props) {
         </Text>
       ),
       cell: (info) => {
-        const handleViewClick = () => {
-          navigate('details');
+        const handleEditClick = (e) => {
+          onOpen();
+          setType('edit');
         };
 
         return (
-          <IconButton
-            icon={<MdVisibility style={{ marginLeft: '-1px' }} />}
-            aria-label="View Details"
-            colorScheme="blue"
-            size="sm"
-            onClick={handleViewClick}
-          />
+          <Box display="flex">
+            <IconButton
+              icon={<MdEdit style={{ marginLeft: '-1px' }} />}
+              aria-label="Edit Details"
+              colorScheme="brand"
+              size="sm"
+              mr="6px"
+              onClick={handleEditClick}
+            />
+          </Box>
         );
       },
     }),
   ];
-
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [data, setData] = React.useState(() => [...tableData]);
+  const [data, setData] = React.useState(() => [...providersData]);
   const table = useReactTable({
     data,
     columns,
@@ -246,56 +281,82 @@ export default function TeamTable(props) {
 
   return (
     <>
-      <Card flexDirection="column" w="100%" px="0px" >
+      <Card flexDirection="column" w="100%" px="0px" overflowX="auto">
         <Flex
-          px={{ base: '16px', md: '25px' }}
+          px={{ base: '12px', md: '25px' }}
           mb="8px"
-          justify="space-between"
+          justifyContent="space-between"
           align="center"
-          direction={{ base: 'column', md: 'row' }}
-          gap={{ base: 4, md: 0 }}
+          flexDirection={{ base: 'column', md: 'row' }}
+          gap={{ base: 2, md: 0 }}
+          w="100%"
         >
           <Text
             color={textColor}
-            fontSize='24px'
+            fontSize="24px"
             fontWeight="700"
             lineHeight="100%"
             mb={{ base: '8px', md: '0px' }}
-
+            textAlign={{ base: 'center', md: 'left' }}
           >
-            Team Members
+            Clinic Providers{' '}
           </Text>
 
           <Box
+            ml={{ base: 0, md: 'auto' }}
+            mr={{ base: 0, md: 5 }}
             w={{ base: '100%', md: 'auto' }}
-            display="flex"
-            justifyContent={{ base: 'center', md: 'flex-end' }}
-            ml="auto"
-            mr={{ md: 5 }}
           >
-            <SearchBar width="100%" />
+            <SearchBar />
+          </Box>
+          <Box
+            mr={{ base: 0, md: 5 }}
+            w={{ base: '100%', md: 'auto' }}
+          >
+            <Select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              width="100%"
+              maxW={{ base: '100%', md: '200px' }}
+              borderRadius="16px"
+            >
+              <option value="" disabled>
+                Filter by status
+              </option>
+
+              <option value="enable" >
+                Enable
+              </option>
+              <option value="disable" >
+                Disable
+              </option>
+            </Select>
           </Box>
 
           <Box w={{ base: '100%', md: 'auto' }}>
             <Button
-              w={{ base: '100%', md: 'fit-content' }}
-              minW="140px"
+              w="100%"
+              minW={{ base: 'auto', md: '140px' }}
               variant="brand"
               fontWeight="500"
-              onClick={onOpen}
+              onClick={() => {
+                onOpen();
+                setType('add');
+              }}
             >
-              Add Team Member
+              Create Provider
             </Button>
           </Box>
         </Flex>
 
         <Flex
-          px={{ base: '16px', md: '25px' }}
+          px={{ base: '12px', md: '25px' }}
           mb="8px"
-          justify="space-between"
+          justifyContent="space-between"
           align="center"
-          direction={{ base: 'column', md: 'row' }}
-          gap={{ base: 4, md: 0 }}
+          flexDirection={{ base: 'column', md: 'row' }}
+          gap={{ base: 2, md: 0 }}
+          w="100%"
         >
           <Box w={{ base: '100%', md: 'auto' }}>
             <Select
@@ -304,7 +365,8 @@ export default function TeamTable(props) {
                 setItemsPerPage(Number(e.target.value));
                 setCurrentPage(1);
               }}
-              width={{ base: '100%', md: 'fit-content' }}
+              width="100%"
+              maxW="200px"
               borderRadius="16px"
             >
               {itemsPerPageOptions.map((option) => (
@@ -317,8 +379,7 @@ export default function TeamTable(props) {
 
           <Box
             w={{ base: '100%', md: 'auto' }}
-            display="flex"
-            justifyContent={{ base: 'center', md: 'flex-end' }}
+            textAlign={{ base: 'center', md: 'right' }}
           >
             <Pagination totalItems={200} onPageChange={handlePageChange} />
           </Box>
@@ -357,6 +418,7 @@ export default function TeamTable(props) {
                   <Tr key={row.id}>
                     {row.getVisibleCells().map((cell) => (
                       <Td
+                        whiteSpace="nowrap"
                         key={cell.id}
                         fontSize="14px"
                         borderColor="transparent"
@@ -373,7 +435,12 @@ export default function TeamTable(props) {
           </Table>
         </Box>
       </Card>
-      <TeamMemberModal isOpen={isOpen} onClose={onClose} />
+      <ProvidersModal
+        isOpen={isOpen}
+        onClose={onClose}
+        type={type}
+        initialData={selectedLocation}
+      />
     </>
   );
 }

@@ -30,6 +30,7 @@ import Card from 'components/card/Card';
 import Menu from 'components/menu/MainMenu';
 import {
   MdCheckCircle,
+  MdEdit,
   MdOutlineError,
   MdPending,
   MdVisibility,
@@ -37,18 +38,19 @@ import {
 import { SearchBar } from 'components/navbar/searchBar/SearchBar';
 import Pagination from 'components/pagination';
 import { useNavigate } from 'react-router-dom';
-import TeamMemberModal from './TeamMemberModal';
+import LocationModal from './RoleModal';
 
 // Column Helper
 const columnHelper = createColumnHelper();
 
 // TeamTable Component
-export default function TeamTable(props) {
-  const { tableData } = props;
+export default function RoleTable(props) {
+  const { rolesData } = props;
   const navigate = useNavigate();
+  const [type, setType] = React.useState('add');
+  const [selectedLocation, setSelectedLocation] = React.useState(null);
   const [sorting, setSorting] = React.useState([]);
   const textColor = useColorModeValue('secondaryGray.900', 'white');
-  // const primaryTextColor = useColorModeValue('brand.600', 'white');
   const borderColor = useColorModeValue('gray.200', 'whiteAlpha.100');
 
   // Columns definition
@@ -66,75 +68,12 @@ export default function TeamTable(props) {
         </Text>
       ),
     }),
-    columnHelper.accessor('name', {
-      id: 'name',
-      header: () => (
-        <Text fontSize="12px" color="gray.400" fontWeight="bold">
-          NAME
-        </Text>
-      ),
-      cell: (info) => (
-        <Text color={textColor} fontSize="sm" fontWeight="700">
-          {info.getValue()}
-        </Text>
-      ),
-    }),
-    columnHelper.accessor('email', {
-      id: 'email',
-      header: () => (
-        <Text fontSize="12px" color="gray.400" fontWeight="bold">
-          EMAIL
-        </Text>
-      ),
-      cell: (info) => (
-        <Text color={textColor} fontSize="sm" fontWeight="700">
-          {info.getValue()}
-        </Text>
-      ),
-    }),
-    columnHelper.accessor('requestStatus', {
-      id: 'requestStatus',
-      header: () => (
-        <Text fontSize="12px" color="gray.400" fontWeight="bold">
-          REQUEST STATUS
-        </Text>
-      ),
-      cell: (info) => (
-        <Flex align="center">
-          <Icon
-            w="24px"
-            h="24px"
-            me="5px"
-            color={
-              info.getValue() === 'Accepted'
-                ? 'green.500'
-                : info.getValue() === 'Pending'
-                  ? 'yellow.500'
-                  : info.getValue() === 'NA'
-                    ? 'orange.500'
-                    : null
-            }
-            as={
-              info.getValue() === 'Accepted'
-                ? MdCheckCircle
-                : info.getValue() === 'Pending'
-                  ? MdPending
-                  : info.getValue() === 'NA'
-                    ? MdOutlineError
-                    : null
-            }
-          />
-          <Text color={textColor} fontSize="sm" fontWeight="700">
-            {info.getValue()}
-          </Text>
-        </Flex>
-      ),
-    }),
+
     columnHelper.accessor('role', {
       id: 'role',
       header: () => (
         <Text fontSize="12px" color="gray.400" fontWeight="bold">
-          ROLE
+          ROLE NAME
         </Text>
       ),
       cell: (info) => {
@@ -162,18 +101,18 @@ export default function TeamTable(props) {
         );
       },
     }),
-    columnHelper.accessor('userStatus', {
-      id: 'userStatus',
+    columnHelper.accessor('status', {
+      id: 'status',
       header: () => (
         <Text fontSize="12px" color="gray.400" fontWeight="bold">
-          USER STATUS
+          Status
         </Text>
       ),
       cell: (info) => {
         const role = info.getValue();
         const roleColors = {
-          Enable: 'green',
-          Disabled: 'red',
+          Active: 'green',
+          Inactive: 'red',
         };
 
         return (
@@ -183,7 +122,7 @@ export default function TeamTable(props) {
             py={1.5}
             borderRadius="md"
             textAlign="center"
-            minWidth="72px"
+            minWidth="60px"
           >
             <Text fontSize="sm" textTransform="capitalize" fontWeight="700">
               {role}
@@ -192,33 +131,38 @@ export default function TeamTable(props) {
         );
       },
     }),
-    columnHelper.accessor('action', {
-      id: 'action',
+
+    columnHelper.accessor('created_at', {
+      id: 'created_at',
       header: () => (
         <Text fontSize="12px" color="gray.400" fontWeight="bold">
-          ACTION
+          Created At
         </Text>
       ),
-      cell: (info) => {
-        const handleViewClick = () => {
-          navigate('details');
-        };
-
-        return (
-          <IconButton
-            icon={<MdVisibility style={{ marginLeft: '-1px' }} />}
-            aria-label="View Details"
-            colorScheme="blue"
-            size="sm"
-            onClick={handleViewClick}
-          />
-        );
-      },
+      cell: (info) => (
+        <Text color={textColor} fontSize="sm" fontWeight="700">
+          {info.getValue()}
+        </Text>
+      ),
     }),
+    columnHelper.accessor('updated_at', {
+      id: 'updated_at',
+      header: () => (
+        <Text fontSize="12px" color="gray.400" fontWeight="bold">
+          Updated At
+        </Text>
+      ),
+      cell: (info) => (
+        <Text color={textColor} fontSize="sm" fontWeight="700">
+          {info.getValue()}
+        </Text>
+      ),
+    }),
+
   ];
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [data, setData] = React.useState(() => [...tableData]);
+  const [data, setData] = React.useState(() => [...rolesData]);
   const table = useReactTable({
     data,
     columns,
@@ -246,56 +190,60 @@ export default function TeamTable(props) {
 
   return (
     <>
-      <Card flexDirection="column" w="100%" px="0px" >
+      <Card flexDirection="column" w="100%" px="0px" overflowX="auto">
         <Flex
-          px={{ base: '16px', md: '25px' }}
+          px={{ base: '12px', md: '25px' }}
           mb="8px"
-          justify="space-between"
+          justifyContent="space-between"
           align="center"
-          direction={{ base: 'column', md: 'row' }}
-          gap={{ base: 4, md: 0 }}
+          flexDirection={{ base: 'column', md: 'row' }}
+          gap={{ base: 2, md: 0 }}
+          w="100%"
         >
           <Text
             color={textColor}
-            fontSize='24px'
+            fontSize="24px"
             fontWeight="700"
             lineHeight="100%"
             mb={{ base: '8px', md: '0px' }}
-
+            textAlign={{ base: 'center', md: 'left' }}
           >
-            Team Members
+            Clinic Roles
+
           </Text>
 
           <Box
+            ml={{ base: 0, md: 'auto' }}
+            mr={{ base: 0, md: 5 }}
             w={{ base: '100%', md: 'auto' }}
-            display="flex"
-            justifyContent={{ base: 'center', md: 'flex-end' }}
-            ml="auto"
-            mr={{ md: 5 }}
           >
-            <SearchBar width="100%" />
+            <SearchBar />
           </Box>
 
           <Box w={{ base: '100%', md: 'auto' }}>
             <Button
-              w={{ base: '100%', md: 'fit-content' }}
-              minW="140px"
+              w="100%"
+              minW={{ base: 'auto', md: '140px' }}
               variant="brand"
               fontWeight="500"
-              onClick={onOpen}
+              onClick={() => {
+                onOpen();
+                setType('add');
+              }}
             >
-              Add Team Member
+              Create New Role
             </Button>
           </Box>
         </Flex>
 
         <Flex
-          px={{ base: '16px', md: '25px' }}
+          px={{ base: '12px', md: '25px' }}
           mb="8px"
-          justify="space-between"
+          justifyContent="space-between"
           align="center"
-          direction={{ base: 'column', md: 'row' }}
-          gap={{ base: 4, md: 0 }}
+          flexDirection={{ base: 'column', md: 'row' }}
+          gap={{ base: 2, md: 0 }}
+          w="100%"
         >
           <Box w={{ base: '100%', md: 'auto' }}>
             <Select
@@ -304,7 +252,8 @@ export default function TeamTable(props) {
                 setItemsPerPage(Number(e.target.value));
                 setCurrentPage(1);
               }}
-              width={{ base: '100%', md: 'fit-content' }}
+              width="100%"
+              maxW="200px"
               borderRadius="16px"
             >
               {itemsPerPageOptions.map((option) => (
@@ -317,8 +266,7 @@ export default function TeamTable(props) {
 
           <Box
             w={{ base: '100%', md: 'auto' }}
-            display="flex"
-            justifyContent={{ base: 'center', md: 'flex-end' }}
+            textAlign={{ base: 'center', md: 'right' }}
           >
             <Pagination totalItems={200} onPageChange={handlePageChange} />
           </Box>
@@ -373,7 +321,12 @@ export default function TeamTable(props) {
           </Table>
         </Box>
       </Card>
-      <TeamMemberModal isOpen={isOpen} onClose={onClose} />
+      <LocationModal
+        isOpen={isOpen}
+        onClose={onClose}
+        type={type}
+        initialData={selectedLocation}
+      />
     </>
   );
 }

@@ -15,6 +15,7 @@ import {
   Select,
   Button,
   useDisclosure,
+  Switch,
 } from '@chakra-ui/react';
 import * as React from 'react';
 import {
@@ -30,6 +31,8 @@ import Card from 'components/card/Card';
 import Menu from 'components/menu/MainMenu';
 import {
   MdCheckCircle,
+  MdDelete,
+  MdEdit,
   MdOutlineError,
   MdPending,
   MdVisibility,
@@ -37,19 +40,36 @@ import {
 import { SearchBar } from 'components/navbar/searchBar/SearchBar';
 import Pagination from 'components/pagination';
 import { useNavigate } from 'react-router-dom';
-import TeamMemberModal from './TeamMemberModal';
+import { ProceduresModal } from './ProceduresModal';
+import DeleteModal from 'components/deleteModal/DeleteModal';
+
+
 
 // Column Helper
 const columnHelper = createColumnHelper();
 
 // TeamTable Component
-export default function TeamTable(props) {
-  const { tableData } = props;
+export default function ProceduresTable(props) {
+  const { proceduresData } = props;
   const navigate = useNavigate();
+  const [type, setType] = React.useState('add');
+  const [selectedLocation, setSelectedLocation] = React.useState(null);
   const [sorting, setSorting] = React.useState([]);
   const textColor = useColorModeValue('secondaryGray.900', 'white');
-  // const primaryTextColor = useColorModeValue('brand.600', 'white');
   const borderColor = useColorModeValue('gray.200', 'whiteAlpha.100');
+  const [isDeleteModalOpen, setDeleteModalOpen] = React.useState(false);
+
+
+  const handleOpenDeleteModal = () => setDeleteModalOpen(true);
+  const handleCloseDeleteModal = () => setDeleteModalOpen(false);
+
+
+  const handleDeleteItem = () => {
+    // Perform your delete logic here, e.g., API call to delete the item
+    console.log('Item deleted!');
+  };
+
+
 
   // Columns definition
   const columns = [
@@ -66,11 +86,24 @@ export default function TeamTable(props) {
         </Text>
       ),
     }),
+    columnHelper.accessor('code', {
+      id: 'code',
+      header: () => (
+        <Text fontSize="12px" color="gray.400" fontWeight="bold">
+          Code
+        </Text>
+      ),
+      cell: (info) => (
+        <Text color={textColor} fontSize="sm" fontWeight="700">
+          {info.getValue()}
+        </Text>
+      ),
+    }),
     columnHelper.accessor('name', {
       id: 'name',
       header: () => (
         <Text fontSize="12px" color="gray.400" fontWeight="bold">
-          NAME
+          Procedure NAME
         </Text>
       ),
       cell: (info) => (
@@ -79,11 +112,11 @@ export default function TeamTable(props) {
         </Text>
       ),
     }),
-    columnHelper.accessor('email', {
-      id: 'email',
+    columnHelper.accessor('cost', {
+      id: 'cost',
       header: () => (
         <Text fontSize="12px" color="gray.400" fontWeight="bold">
-          EMAIL
+          Cost
         </Text>
       ),
       cell: (info) => (
@@ -92,106 +125,33 @@ export default function TeamTable(props) {
         </Text>
       ),
     }),
-    columnHelper.accessor('requestStatus', {
-      id: 'requestStatus',
+    columnHelper.accessor('added_by', {
+      id: 'added_by',
       header: () => (
         <Text fontSize="12px" color="gray.400" fontWeight="bold">
-          REQUEST STATUS
+          Added by
         </Text>
       ),
       cell: (info) => (
-        <Flex align="center">
-          <Icon
-            w="24px"
-            h="24px"
-            me="5px"
-            color={
-              info.getValue() === 'Accepted'
-                ? 'green.500'
-                : info.getValue() === 'Pending'
-                  ? 'yellow.500'
-                  : info.getValue() === 'NA'
-                    ? 'orange.500'
-                    : null
-            }
-            as={
-              info.getValue() === 'Accepted'
-                ? MdCheckCircle
-                : info.getValue() === 'Pending'
-                  ? MdPending
-                  : info.getValue() === 'NA'
-                    ? MdOutlineError
-                    : null
-            }
-          />
-          <Text color={textColor} fontSize="sm" fontWeight="700">
-            {info.getValue()}
-          </Text>
-        </Flex>
-      ),
-    }),
-    columnHelper.accessor('role', {
-      id: 'role',
-      header: () => (
-        <Text fontSize="12px" color="gray.400" fontWeight="bold">
-          ROLE
+        <Text color={textColor} fontSize="sm" fontWeight="700">
+          {info.getValue()}
         </Text>
       ),
-      cell: (info) => {
-        const role = info.getValue();
-        const roleColors = {
-          Admin: 'red',
-          Lab: 'blue',
-          Staff: 'green',
-          // default: "gray.500",
-        };
-
-        return (
-          <Badge
-            colorScheme={roleColors[role] || 'gray'}
-            px={2}
-            py={1.5}
-            borderRadius="md"
-            textAlign="center"
-            minWidth="60px"
-          >
-            <Text fontSize="sm" textTransform="capitalize" fontWeight="700">
-              {role}
-            </Text>
-          </Badge>
-        );
-      },
     }),
-    columnHelper.accessor('userStatus', {
-      id: 'userStatus',
+    columnHelper.accessor('added_at', {
+      id: 'added_at',
       header: () => (
         <Text fontSize="12px" color="gray.400" fontWeight="bold">
-          USER STATUS
+          Added at
         </Text>
       ),
-      cell: (info) => {
-        const role = info.getValue();
-        const roleColors = {
-          Enable: 'green',
-          Disabled: 'red',
-        };
-
-        return (
-          <Badge
-            colorScheme={roleColors[role] || 'gray'}
-            px={2}
-            py={1.5}
-            borderRadius="md"
-            textAlign="center"
-            minWidth="72px"
-          >
-            <Text fontSize="sm" textTransform="capitalize" fontWeight="700">
-              {role}
-            </Text>
-          </Badge>
-        );
-      },
+      cell: (info) => (
+        <Text color={textColor} fontSize="sm" fontWeight="700">
+          {info.getValue()}
+        </Text>
+      ),
     }),
+
     columnHelper.accessor('action', {
       id: 'action',
       header: () => (
@@ -200,25 +160,52 @@ export default function TeamTable(props) {
         </Text>
       ),
       cell: (info) => {
+
+
+        const handleEditClick = (e) => {
+          onOpen();
+          setType('edit');
+        };
+
         const handleViewClick = () => {
           navigate('details');
         };
 
+
+
+
         return (
-          <IconButton
-            icon={<MdVisibility style={{ marginLeft: '-1px' }} />}
-            aria-label="View Details"
-            colorScheme="blue"
-            size="sm"
-            onClick={handleViewClick}
-          />
+          <Box display="flex">
+            <IconButton
+              icon={<MdEdit style={{ marginLeft: '-1px' }} />}
+              aria-label="Edit Details"
+              colorScheme="brand"
+              size="sm"
+              mr="6px"
+              onClick={handleEditClick}
+            />
+            <IconButton
+              icon={<MdVisibility style={{ marginLeft: '-1px' }} />}
+              aria-label="View Details"
+              colorScheme="blackAlpha"
+              size="sm"
+              mr="6px"
+              onClick={handleViewClick}
+            />
+            <IconButton
+              icon={<MdDelete style={{ marginLeft: '-1px' }} />}
+              aria-label="View Details"
+              colorScheme="red"
+              size="sm"
+              onClick={handleOpenDeleteModal}
+            />
+          </Box>
         );
       },
     }),
   ];
-
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [data, setData] = React.useState(() => [...tableData]);
+  const [data, setData] = React.useState(() => [...proceduresData]);
   const table = useReactTable({
     data,
     columns,
@@ -246,56 +233,59 @@ export default function TeamTable(props) {
 
   return (
     <>
-      <Card flexDirection="column" w="100%" px="0px" >
+      <Card flexDirection="column" w="100%" px="0px" overflowX="auto">
         <Flex
-          px={{ base: '16px', md: '25px' }}
+          px={{ base: '12px', md: '25px' }}
           mb="8px"
-          justify="space-between"
+          justifyContent="space-between"
           align="center"
-          direction={{ base: 'column', md: 'row' }}
-          gap={{ base: 4, md: 0 }}
+          flexDirection={{ base: 'column', md: 'row' }}
+          gap={{ base: 2, md: 0 }}
+          w="100%"
         >
           <Text
             color={textColor}
-            fontSize='24px'
+            fontSize="24px"
             fontWeight="700"
             lineHeight="100%"
             mb={{ base: '8px', md: '0px' }}
-
+            textAlign={{ base: 'center', md: 'left' }}
           >
-            Team Members
+            Procedures
+
           </Text>
 
           <Box
+            ml={{ base: 0, md: 'auto' }}
+            mr={{ base: 0, md: 5 }}
             w={{ base: '100%', md: 'auto' }}
-            display="flex"
-            justifyContent={{ base: 'center', md: 'flex-end' }}
-            ml="auto"
-            mr={{ md: 5 }}
           >
-            <SearchBar width="100%" />
+            <SearchBar />
           </Box>
 
           <Box w={{ base: '100%', md: 'auto' }}>
             <Button
-              w={{ base: '100%', md: 'fit-content' }}
-              minW="140px"
+              w="100%"
+              minW={{ base: 'auto', md: '140px' }}
               variant="brand"
               fontWeight="500"
-              onClick={onOpen}
+              onClick={() => {
+                onOpen();
+                setType('add');
+              }}
             >
-              Add Team Member
-            </Button>
+              Add New Procedure            </Button>
           </Box>
         </Flex>
 
         <Flex
-          px={{ base: '16px', md: '25px' }}
+          px={{ base: '12px', md: '25px' }}
           mb="8px"
-          justify="space-between"
+          justifyContent="space-between"
           align="center"
-          direction={{ base: 'column', md: 'row' }}
-          gap={{ base: 4, md: 0 }}
+          flexDirection={{ base: 'column', md: 'row' }}
+          gap={{ base: 2, md: 0 }}
+          w="100%"
         >
           <Box w={{ base: '100%', md: 'auto' }}>
             <Select
@@ -304,7 +294,8 @@ export default function TeamTable(props) {
                 setItemsPerPage(Number(e.target.value));
                 setCurrentPage(1);
               }}
-              width={{ base: '100%', md: 'fit-content' }}
+              width="100%"
+              maxW="200px"
               borderRadius="16px"
             >
               {itemsPerPageOptions.map((option) => (
@@ -317,8 +308,7 @@ export default function TeamTable(props) {
 
           <Box
             w={{ base: '100%', md: 'auto' }}
-            display="flex"
-            justifyContent={{ base: 'center', md: 'flex-end' }}
+            textAlign={{ base: 'center', md: 'right' }}
           >
             <Pagination totalItems={200} onPageChange={handlePageChange} />
           </Box>
@@ -373,7 +363,20 @@ export default function TeamTable(props) {
           </Table>
         </Box>
       </Card>
-      <TeamMemberModal isOpen={isOpen} onClose={onClose} />
+
+      <ProceduresModal
+        isOpen={isOpen}
+        onClose={onClose}
+        type={type}
+        initialData={selectedLocation}
+      />
+
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onDelete={handleDeleteItem}
+        itemId="123" // Item name to be deleted
+      />
     </>
   );
 }

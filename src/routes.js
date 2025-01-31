@@ -18,7 +18,6 @@ import {
 // Admin Imports
 import MainDashboard from 'views/admin/default';
 import NFTMarketplace from 'views/admin/marketplace';
-import Profile from 'views/admin/profile';
 import DataTables from 'views/admin/dataTables';
 
 // Auth Imports
@@ -28,6 +27,14 @@ import ResetPassword from 'views/auth/resetPassword';
 import Team from 'views/team';
 import TeamDetails from 'views/team/teamDetails';
 import Location from 'views/location';
+import Role from 'views/roles';
+import LocationDetails from 'views/location/locationDetails';
+import Providers from 'views/providers';
+import Procedures from 'views/procedures';
+import ProceduresDetails from 'views/procedures/proceduresDetails';
+import Status from 'views/status';
+import Profile from 'views/profile';
+import ChangePassword from 'components/changePassword/ChangePassword';
 
 const routes = [
   // {
@@ -85,28 +92,28 @@ const routes = [
     layout: '/admin',
     path: '/providers',
     icon: <Icon as={MdLocalHospital} width="20px" height="20px" color="inherit" />,
-    component: <DataTables />,
+    component: <Providers />,
   },
   {
     name: 'Procedures',
     layout: '/admin',
     path: '/procedures',
     icon: <Icon as={MdListAlt} width="20px" height="20px" color="inherit" />,
-    component: <DataTables />,
+    component: <Procedures />,
   },
   {
     name: 'Roles',
     layout: '/admin',
     path: '/roles',
     icon: <Icon as={MdAssignmentInd} width="20px" height="20px" color="inherit" />,
-    component: <DataTables />,
+    component: <Role />,
   },
   {
     name: 'Status',
     layout: '/admin',
     path: '/status',
     icon: <Icon as={MdAssignment} width="20px" height="20px" color="inherit" />,
-    component: <DataTables />,
+    component: <Status />,
   },
   // Auth Routes
   {
@@ -135,6 +142,34 @@ const routes = [
     layout: '/admin',
     path: '/team/details',
     component: <TeamDetails />,
+    show: false
+  },
+  {
+    name: 'Location Details',
+    layout: '/admin',
+    path: '/locations/details',
+    component: <LocationDetails />,
+    show: false
+  },
+  {
+    name: 'Procedure Details',
+    layout: '/admin',
+    path: '/Procedures/details',
+    component: <ProceduresDetails />,
+    show: false
+  },
+  {
+    name: 'Profile',
+    layout: '/admin',
+    path: '/profile-settings',
+    component: <Profile />,
+    show: false
+  },
+  {
+    name: 'Change Password',
+    layout: '/admin',
+    path: '/account-settings',
+    component: <ChangePassword />,
     show: false
   },
 ];

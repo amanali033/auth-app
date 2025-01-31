@@ -154,6 +154,7 @@ export default function TeamDetails(props) {
             onChange={handleRoleChange}
             w="100%"
             mb="20px"
+            borderRadius="16px"
           >
             <option value="Staff">Staff</option>
             <option value="Lab">Lab</option>
